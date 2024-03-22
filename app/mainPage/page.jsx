@@ -3,7 +3,7 @@ import Card from "../components/Card"
 import React, { useState, useEffect } from "react"
 import Nav from "../components/Nav"
 import Footer from "../components/Footer"
-import toast from "react-hot-toast"
+import { toast, Toaster } from "react-hot-toast"
 import ProductCard from "../components/ProductCard"
 
 const Page = () => {
@@ -59,7 +59,7 @@ const Page = () => {
             console.log(result.msg)
             setTimeout(() => {
               location.href = "/cart"
-            }, 1000)
+            }, 2000)
           } else {
             toast.error(result.msg)
           }
@@ -74,11 +74,11 @@ const Page = () => {
     getProducts()
   }, [])
   return (
-    <main className="min-h-screen bg-[#ffffff] w-full ">
+    <main className="bg-[#ffffff] w-full ">
       <Nav />
       <br />
       <br />
-      <div className="flex justify-between mt-20 px-[2rem]">
+      <div className="min-h-screen flex justify-between mt-10 px-[2rem]">
         <div className="flex flex-[1] mr-8">
           <div className="flex flex-col">
             <h1 className="font-bold text-2xl">Browse our range of products</h1>
@@ -124,6 +124,7 @@ const Page = () => {
         </div>
       </div>
       <Footer />
+      <Toaster />
     </main>
   )
 }
