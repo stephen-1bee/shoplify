@@ -78,9 +78,12 @@ const page = () => {
         />
       </div>
       <div className="flex w-full items-center justify-center bg-[#f9fdfa] h-[100vh] gap-10 flex-col">
-        <h2 className="font-bold text-lg">
-          Shopily<span className="text-[#DD5137]">Store</span>
-        </h2>
+        <div className="flex flex-col items-center justify-center gap-2">
+          <h2 className="font-bold text-2xl">
+            Shopily<span className="text-[#DD5137]">Store</span>
+          </h2>
+          <p>Login to Continue</p>
+        </div>
         {/* form */}
         <form
           onSubmit={handleLogin}
@@ -89,15 +92,17 @@ const page = () => {
           <input
             type="text"
             onChange={(e) => setEmail(e.target.value)}
-            className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full"
+            placeholder="email address"
+            className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
           />
           <input
             type="password"
             onChange={(e) => setPassword(e.target.value)}
-            className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full"
+            placeholder="password"
+            className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
           />
           <button className="px-4 py-4 ring-1 text-white rounded-full w-full bg-[#DD5137] hover:bg-[#dd5037d8] delay-100 duration-100">
-            {loading ? "loading..." : "Login"}
+            {loading ? "loging in..." : "Login"}
           </button>
         </form>
       </div>

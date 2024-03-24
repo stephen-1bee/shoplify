@@ -48,7 +48,7 @@ const Page = () => {
         redirect: "follow",
       }
 
-      fetch(
+      await fetch(
         "https://recommender-api-s335.onrender.com/api/v1/carts/create",
         requestOptions
       )
@@ -73,8 +73,18 @@ const Page = () => {
   useEffect(() => {
     getProducts()
   }, [])
+
+  // grab product
+  const hadnleProductClick = (productId) => {
+    if (typeof window !== "undefined" && window.sessionStorage) {
+      sessionStorage.setItem("userCenterId", productId)
+    }
+
+    location.href = "/viewProduct"
+  }
+
   return (
-    <main className="bg-[#ffffff] w-full ">
+    <main className="w-full ">
       <Nav />
       <br />
       <br />
@@ -91,7 +101,10 @@ const Page = () => {
               ) : (
                 <div className="flex flex-row mt-4 gap-2 w-[1200px] overflow-x-scroll overflow-hidden products">
                   {products.map((product) => (
-                    <div className="cursor-pointer">
+                    <div
+                      className="cursor-pointer"
+                      // onClick={() => hadnleProductClick(product._id)}
+                    >
                       <Card
                         image={product.photo}
                         title={product.name}
@@ -112,7 +125,7 @@ const Page = () => {
           </div>
         </div>
         <div>
-          <div className="flex flex-col flex-[0.3] mr-9 recommendations overflow-y-scroll ">
+          <div className="flex flex-col flex-[0.3] mr-9 recommendations overflow-y-scroll p-5 bg-[#fdf9fa]">
             <h1 className="text-2xl font-bold mb-3">Recommended</h1>
             <div className="mt-4 flex flex-col gap-4">
               <ProductCard />

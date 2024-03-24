@@ -1,22 +1,28 @@
 "use client"
 import React, { useState, useEffect } from "react"
 import Footer from "../components/Footer"
+import { ShoppingCartOutlined } from "@ant-design/icons"
 import {
   ArrowLeftOutlined,
   DeleteOutlined,
   QuestionCircleFilled,
 } from "@ant-design/icons"
-import { Popconfirm } from "antd"
+import { Popconfirm, Avatar } from "antd"
 import Image from "next/image"
 import { Toaster, toast } from "react-hot-toast"
+import conact from "@/utils/concat"
 
 const page = () => {
   const [cart, setCart] = useState([])
   const [loading, setloading] = useState(false)
+  const [cartNo, setcartNum] = useState("")
 
   let userId
+  let username
   if (typeof sessionStorage !== "undefined") {
+    username = sessionStorage.getItem("username")
     userId = sessionStorage.getItem("userId")
+    sessionStorage.setItem("cartNum", cartNo)
   }
 
   const getCart = () => {
@@ -34,6 +40,7 @@ const page = () => {
         .then((response) => response.json())
         .then((result) => {
           setCart(result.cart)
+          setcartNum(result.cart_count)
           console.log(result.cart)
           setloading(false)
         })
@@ -89,6 +96,23 @@ const page = () => {
           <h1>
             Shoplify<span className="text-[#dd5137]">Store</span>
           </h1>
+        </div>
+        <div className="flex gap-4 items-center justify-center">
+          <div className="relative">
+            <div className="bg-red-500 rounded-full h-4 w-4 flex items-center justify-center font-bold text-[10px] absolute top-[-8px] right-[-5px] z-[999] p-1">
+              <p className="text-white text-center">{cartNo ? cartNo : "0"}</p>
+            </div>
+            <ShoppingCartOutlined
+              className="text-[20px] z-0"
+              onClick={() => (location.href = "/cart")}
+            />
+          </div>
+          <input
+            type="search"
+            placeholder="search..."
+            className="px-4 py-2 w-[200px] rounded-full ring-1 ring-[#ccc] "
+          />
+          <Avatar size={40}>{conact(username)}</Avatar>
         </div>
       </div>
 
