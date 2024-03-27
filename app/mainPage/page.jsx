@@ -31,6 +31,7 @@ const Page = () => {
     }
   }
 
+  // add to cart
   const addToCart = async (productId) => {
     try {
       const myHeaders = new Headers()
@@ -54,7 +55,7 @@ const Page = () => {
       )
         .then((response) => response.json())
         .then((result) => {
-          if (result.msg === "cart added successfully") {
+          if (result.msg === "Cart added successfully") {
             toast.success(result.msg)
             console.log(result.msg)
             setTimeout(() => {
