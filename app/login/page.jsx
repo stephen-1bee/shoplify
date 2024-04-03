@@ -3,6 +3,7 @@ import Image from "next/image"
 import React, { useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
 import Link from "next/link"
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons"
 
 const page = () => {
   const [email, setEmail] = useState("")
@@ -10,6 +11,7 @@ const page = () => {
   const [loading, setLoading] = useState(false)
   const [userId, setUserId] = useState("")
   const [username, setUsername] = useState("")
+  const [showPassword, setshowPassword] = useState(false)
 
   // retrieve current user id and name
   if (typeof sessionStorage !== "undefined") {
@@ -85,18 +87,33 @@ const page = () => {
           onSubmit={handleLogin}
           className="flex flex-col items-center justify-center w-[300px] gap-5"
         >
-          <input
-            type="text"
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="email address"
-            className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
-          />
-          <input
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="password"
-            className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
-          />
+          <div className="w-full">
+            <h1>Email</h1>
+            <input
+              type="text"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="email address"
+              className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
+            />
+          </div>
+          <div className="w-full">
+            <div className="flex items-center justify-between">
+              <h1>Passowrd</h1>
+              {showPassword ? (
+                <EyeOutlined onClick={() => setshowPassword(!showPassword)} />
+              ) : (
+                <EyeInvisibleOutlined
+                  onClick={() => setshowPassword(!showPassword)}
+                />
+              )}
+            </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="password"
+              className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
+            />
+          </div>
           <button className="px-4 py-4 ring-1 text-white rounded-full w-full bg-[#DD5137] hover:bg-[#dd5037d8] delay-100 duration-100">
             {loading ? "loging in..." : "Login"}
           </button>
@@ -106,7 +123,7 @@ const page = () => {
           </div>
         </form>
       </div>
-      <Toaster/>
+      <Toaster />
     </div>
   )
 }
