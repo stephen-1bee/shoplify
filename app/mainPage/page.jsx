@@ -5,10 +5,12 @@ import Nav from "../components/Nav"
 import Footer from "../components/Footer"
 import { toast, Toaster } from "react-hot-toast"
 import ProductCard from "../components/ProductCard"
+import { FrownOutlined } from "@ant-design/icons"
 
 const Page = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
+  const [recommended, setrecommended] = useState(null)
 
   // Retrieve user id
   let userId = null
@@ -32,7 +34,8 @@ const Page = () => {
   }
 
   // add to cart
-  const addToCart = async (productId) => {
+  const addToCart = async (event, productId) => {
+    event.stopPropagation()
     try {
       const myHeaders = new Headers()
       myHeaders.append("Content-Type", "application/json")
@@ -58,9 +61,6 @@ const Page = () => {
           if (result.msg === "Cart added successfully") {
             toast.success(result.msg)
             console.log(result.msg)
-            setTimeout(() => {
-              location.href = "/cart"
-            }, 2000)
           } else {
             toast.error(result.msg)
           }
@@ -71,23 +71,46 @@ const Page = () => {
     }
   }
 
+  // get recommendations
+  const getRecommendation = async () => {
+    try {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      }
+
+      fetch(
+        "https://recommender-api-s335.onrender.com/api/v1/products/recommended",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          setrecommended(result?.recommended)
+          console.log(`recommended ${result?.recommended}`)
+        })
+        .catch((error) => console.error(error))
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   useEffect(() => {
     getProducts()
+    getRecommendation()
   }, [])
 
   // grab product
   const hadnleProductClick = (productId) => {
     if (typeof window !== "undefined" && window.sessionStorage) {
-      sessionStorage.setItem("userCenterId", productId)
+      sessionStorage.setItem("productId", productId)
     }
-
     location.href = "/viewProduct"
   }
 
   return (
     <main className="w-full ">
       <Nav />
-      <br />
+      <br /> 
       <br />
       <div className="min-h-screen flex justify-between mt-10 px-[2rem]">
         <div className="flex flex-[1] mr-8">
@@ -104,14 +127,15 @@ const Page = () => {
                   {products.map((product) => (
                     <div
                       className="cursor-pointer"
-                      // onClick={() => hadnleProductClick(product._id)}
+                      onClick={() => hadnleProductClick(product._id)}
                     >
                       <Card
                         image={product.photo}
                         title={product.name}
                         desc={product.desc}
                         price={product.price}
-                        onAddToCart={() => addToCart(product._id)}
+                        views={product.views ? product.views : "0"}
+                        onAddToCart={(event) => addToCart(event, product._id)}
                       />
                     </div>
                   ))}
@@ -121,19 +145,34 @@ const Page = () => {
             <br />
             <h1 className="font-black text-2xl">Ladies Wear</h1>
             <div className="flex flex-row mt-4 gap-2 w-[1200px] overflow-x-scroll products">
-              loading..
+              loading...
             </div>
           </div>
         </div>
+
+        {/* recommended */}
         <div>
-          <div className="flex flex-col flex-[0.3] mr-9 recommendations overflow-y-scroll p-5 bg-[#fdf9fa]">
+          <div className="flex flex-col flex-[0.3] mr-9 recommendations overflow-y-scroll p-5 shadow-lg h-[700px]">
             <h1 className="text-2xl font-bold mb-3">Recommended</h1>
-            <div className="mt-4 flex flex-col gap-4">
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-              <ProductCard />
-            </div>
+            {recommended?.length > 0 ? (
+              <div>
+                {recommended.map((recommend) => (
+                  <div>
+                    <ProductCard
+                      image={recommend?.photo}
+                      title={recommend?.name}
+                      desc={recommend?.desc}
+                      price={recommend?.price}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-4 flex flex-col gap-4 items-center">
+                <FrownOutlined />
+                <p>no recommndations yet</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,10 +1,14 @@
 "use client"
-import { ShoppingCartOutlined, TagOutlined } from "@ant-design/icons"
+import {
+  EyeOutlined,
+  ShoppingCartOutlined,
+  TagOutlined,
+} from "@ant-design/icons"
 import Image from "next/image"
 import React from "react"
 import toast from "react-hot-toast"
 
-const Card = ({ image, title, desc, price, onAddToCart }) => {
+const Card = ({ image, title, desc, price, onAddToCart, views }) => {
   const buyNow = () => {
     toast.success("Buy now")
   }
@@ -33,13 +37,10 @@ const Card = ({ image, title, desc, price, onAddToCart }) => {
           <ShoppingCartOutlined className="text-[#dd5137]" />
           <p className="text-[#dd5137] font-semibold text-sm">Add to cart</p>
         </button>
-        <button
-          className="flex items-center gap-3 bg-[#dd5137] p-1 px-3 rounded-full py-2 w-[150px]"
-          onClick={() => buyNow()}
-        >
-          <TagOutlined className="text-white" />
-          <p className="text-white text-sm text-center">Buy Now</p>
-        </button>
+        <div className="flex items-center gap-3 bg-[#dd5137] p-1 px-3 rounded-full py-2 w-[70px]">
+          <EyeOutlined className="text-white" />
+          <p className="text-white text-sm text-center">{views}</p>
+        </div>
       </div>
     </div>
   )

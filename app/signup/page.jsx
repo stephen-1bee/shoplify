@@ -1,8 +1,4 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import React, { useState } from "react"
-import toast, { Toaster } from "react-hot-toast"
+import React from "react"
 
 const page = () => {
   const [sUsername, setsUsername] = useState("")
@@ -10,45 +6,10 @@ const page = () => {
   const [sPassword, setsPassword] = useState("")
   const [sLoading, setsLoading] = useState(false)
 
-  const handleSignup = async (e) => {
+  const handleSignup = (e) => {
     e.preventDefault()
-    if (!sUsername || !sPassword || !sUsername) {
-      return toast.error("All fields are required")
-    }
     try {
-      setsLoading(true)
-      const myHeaders = new Headers()
-      myHeaders.append("Content-Type", "application/json")
-
-      const raw = JSON.stringify({
-        username: sUsername,
-        email: sEmail,
-        password: sPassword,
-      })
-
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      }
-
-      await fetch(
-        "https://recommender-api-s335.onrender.com/api/v1/users/create",
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          if (result.msg === "User created successfully") {
-            toast.success("Signup successful")
-            console.log(result)
-            setsLoading(false)
-            location.href = "/login"
-          } else {
-            toast.error(result.msg)
-          }
-        })
-        .catch((error) => console.error(error))
+      toast.success("Signup successful")
     } catch (err) {
       console.log(err)
     }
@@ -70,7 +31,7 @@ const page = () => {
           <h2 className="font-bold text-4xl">
             Shopily<span className="text-[#DD5137]">Store</span>
           </h2>
-          <p className="text-lg">Welcome, Signup to Continue</p>
+          <p className="text-lg">Login to Continue</p>
         </div>
 
         {/* form */}
@@ -87,7 +48,7 @@ const page = () => {
           <input
             type="text"
             onChange={(e) => setsEmail(e.target.value)}
-            placeholder="email"
+            placeholder="username"
             className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
           />
           <input
@@ -97,15 +58,10 @@ const page = () => {
             className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
           />
           <button className="px-4 py-4 ring-1 text-white rounded-full w-full bg-[#DD5137] hover:bg-[#dd5037d8] delay-100 duration-100">
-            {sLoading ? "Signing up..." : "Signup"}
+            {sLoading ? "loging in..." : "Login"}
           </button>
-          <div className="flex gap-2 items-center">
-            <p>Don't have an account ? </p>
-            <Link href="/login">Login</Link>
-          </div>
         </form>
       </div>
-      <Toaster />
     </div>
   )
 }

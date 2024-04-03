@@ -1,29 +1,35 @@
 "use client"
 import Image from "next/image"
-import Link from "next/link"
 import React, { useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
+import Link from "next/link"
 
 const page = () => {
-  const [sUsername, setsUsername] = useState("")
-  const [sEmail, setsEmail] = useState("")
-  const [sPassword, setsPassword] = useState("")
-  const [sLoading, setsLoading] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [userId, setUserId] = useState("")
+  const [username, setUsername] = useState("")
 
-  const handleSignup = async (e) => {
+  // retrieve current user id and name
+  if (typeof sessionStorage !== "undefined") {
+    sessionStorage.setItem("userId", userId)
+    sessionStorage.setItem("username", username)
+  }
+
+  const handleLogin = async (e) => {
     e.preventDefault()
-    if (!sUsername || !sPassword || !sUsername) {
+    if (!email || !password) {
       return toast.error("All fields are required")
     }
     try {
-      setsLoading(true)
+      setLoading(true)
       const myHeaders = new Headers()
       myHeaders.append("Content-Type", "application/json")
 
       const raw = JSON.stringify({
-        username: sUsername,
-        email: sEmail,
-        password: sPassword,
+        email: email,
+        password: password,
       })
 
       const requestOptions = {
@@ -33,26 +39,28 @@ const page = () => {
         redirect: "follow",
       }
 
-      await fetch(
-        "https://recommender-api-s335.onrender.com/api/v1/users/create",
+      const response = await fetch(
+        "https://recommender-api-s335.onrender.com/api/v1/users/login",
         requestOptions
       )
-        .then((response) => response.json())
-        .then((result) => {
-          if (result.msg === "User created successfully") {
-            toast.success("Signup successful")
-            console.log(result)
-            setsLoading(false)
-            location.href = "/login"
-          } else {
-            toast.error(result.msg)
-          }
-        })
-        .catch((error) => console.error(error))
-    } catch (err) {
-      console.log(err)
+      const result = await response.json()
+
+      if (result.msg === "login successful") {
+        toast.success(`Welcome, ${result.user.username}`)
+        setUserId(result.user._id)
+        setUsername(result.user.username)
+        location.href = "/mainPage"
+      } else {
+        toast.error(result.msg)
+      }
+
+      setLoading(false)
+    } catch (error) {
+      console.error(error)
+      setLoading(false)
     }
   }
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="items-center justify-center ">
@@ -70,42 +78,35 @@ const page = () => {
           <h2 className="font-bold text-4xl">
             Shopily<span className="text-[#DD5137]">Store</span>
           </h2>
-          <p className="text-lg">Welcome, Signup to Continue</p>
+          <p className="text-lg">Login to Continue</p>
         </div>
-
         {/* form */}
         <form
-          onSubmit={handleSignup}
+          onSubmit={handleLogin}
           className="flex flex-col items-center justify-center w-[300px] gap-5"
         >
           <input
             type="text"
-            onChange={(e) => setsUsername(e.target.value)}
-            placeholder="username"
-            className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
-          />
-          <input
-            type="text"
-            onChange={(e) => setsEmail(e.target.value)}
-            placeholder="email"
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="email address"
             className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
           />
           <input
             type="password"
-            onChange={(e) => setsPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
             className="px-4 py-4 ring-1 ring-[#ccc] rounded-full w-full outline-black"
           />
           <button className="px-4 py-4 ring-1 text-white rounded-full w-full bg-[#DD5137] hover:bg-[#dd5037d8] delay-100 duration-100">
-            {sLoading ? "Signing up..." : "Signup"}
+            {loading ? "loging in..." : "Login"}
           </button>
           <div className="flex gap-2 items-center">
-            <p>Don't have an account ? </p>
-            <Link href="/login">Login</Link>
+            <p>Already having an account ? </p>
+            <Link href="/">Signup</Link>
           </div>
         </form>
       </div>
-      <Toaster />
+      <Toaster/>
     </div>
   )
 }

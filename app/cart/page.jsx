@@ -25,7 +25,7 @@ const page = () => {
     sessionStorage.setItem("cartNum", cartNo)
   }
 
-  const getCart = () => {
+  const getCart = async () => {
     setloading(true)
     try {
       const requestOptions = {
@@ -33,7 +33,7 @@ const page = () => {
         redirect: "follow",
       }
 
-      fetch(
+      await fetch(
         `https://recommender-api-s335.onrender.com/api/v1/carts/user/${userId}`,
         requestOptions
       )
