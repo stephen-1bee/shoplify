@@ -17,11 +17,11 @@ const Card = ({ image, title, desc, price, onAddToCart, views }) => {
     <div className="w-[350px] bg-white rounded-xl p-8 px-3">
       <div className="px-5">
         <Image
-          width={400}
-          height={200}
+          width={100}
+          height={100}
           alt="image"
           src={image}
-          className="w-full h-[170px] rounded-lg"
+          className="w-full h-[170px] rounded-lg object-cover"
         />
         <div className="flex items-center justify-between mb-2 mt-6">
           <h1 className="font-bold">{title}</h1>
