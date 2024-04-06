@@ -152,7 +152,7 @@ const Page = () => {
             className="rounded-lg lg:h-[500px] lg:w-[500px] h-[400px] w-[300px] object-cover"
           />
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-[400px]">
           <h1 className="text-3xl font-bold">{product.name}</h1>
           <p>{product.desc}</p>
           <div className="flex items-center justify-between">

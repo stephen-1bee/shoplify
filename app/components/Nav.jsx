@@ -45,7 +45,7 @@ const Nav = () => {
   }, [])
 
   return (
-    <div className="flex w-full items-center justify-between px-8 shadow h-[10vh]">
+    <div class="flex w-full items-center justify-between px-8 shadow h-[10vh] fixed z-[999] bg-white">
       <div>
         <h1>
           Shoplify <span className="text-[#dd5137]">Store</span>

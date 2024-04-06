@@ -108,22 +108,24 @@ const Page = () => {
   }
 
   return (
-    <main className="w-full ">
+    <main className="min-h-screen ">
       <Nav />
-      <br /> 
       <br />
-      <div className="min-h-screen flex justify-between mt-10 px-[2rem]">
-        <div className="flex flex-[1] mr-8">
+      <br />
+      <div className="min-h-screen flex justify-between mt-[80px]">
+        <div className="flex flex-[1]">
           <div className="flex flex-col">
-            <h1 className="font-bold text-2xl">Browse our range of products</h1>
+            <h1 className="font-bold text-2xl px-[2rem]">
+              Browse our range of products
+            </h1>
             <br />
 
-            <h1 className="font-black text-2xl">Men's Wear</h1>
+            <h1 className="font-black text-2xl px-[2rem]">Men's Wear</h1>
             <div>
               {loading ? (
-                "loading..."
+                <p className="px-[2rem]">loading...</p>
               ) : (
-                <div className="flex flex-row mt-4 gap-2 w-[1200px] overflow-x-scroll overflow-hidden products">
+                <div className="flex flex-row mt-4 gap-2 w-full flex-wrap overflow-hidden ">
                   {products.map((product) => (
                     <div
                       className="cursor-pointer"
@@ -143,16 +145,12 @@ const Page = () => {
               )}
             </div>
             <br />
-            <h1 className="font-black text-2xl">Ladies Wear</h1>
-            <div className="flex flex-row mt-4 gap-2 w-[1200px] overflow-x-scroll products">
-              loading...
-            </div>
           </div>
         </div>
 
         {/* recommended */}
         <div>
-          <div className="flex flex-col flex-[0.3] mr-9 recommendations overflow-y-scroll p-5 shadow-lg h-[700px]">
+          <div className="flex flex-col w-[300px] mr-5 overflow-y-scroll p-5 shadow-lg h-[700px] ">
             <h1 className="text-2xl font-bold mb-3">Recommended</h1>
             {recommended?.length > 0 ? (
               <div>
@@ -168,7 +166,7 @@ const Page = () => {
                 ))}
               </div>
             ) : (
-              <div className="mt-4 flex flex-col gap-4 items-center">
+              <div className="mt-5 flex flex-col gap-1 items-center">
                 <FrownOutlined />
                 <p>no recommndations yet</p>
               </div>
