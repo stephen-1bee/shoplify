@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from "react"
 import Image from "next/image"
-import { EyeOutlined } from "@ant-design/icons"
+import { EyeOutlined, TagOutlined } from "@ant-design/icons"
 import Footer from "../components/Footer"
 import { ShoppingCartOutlined } from "@ant-design/icons"
 import { ArrowLeftOutlined } from "@ant-design/icons"
@@ -112,6 +112,13 @@ const Page = () => {
     window.history.back()
   }
 
+  const handleBuy = (productId) => {
+    setTimeout(() => {
+      toast.success("Buying...")
+      toast.success(productId)
+    }, 1000)
+  }
+
   return (
     <div>
       {/* nav */}
@@ -152,7 +159,7 @@ const Page = () => {
             className="rounded-lg lg:h-[500px] lg:w-[500px] h-[400px] w-[300px] object-cover"
           />
         </div>
-        <div className="flex flex-col gap-4 w-[400px]">
+        <div className="flex flex-col gap-4 w-[350px]">
           <h1 className="text-3xl font-bold">{product.name}</h1>
           <p>{product.desc}</p>
           <div className="flex items-center justify-between">
@@ -161,13 +168,24 @@ const Page = () => {
             </p>
             <p className="text-lg font-semibold">$ {product.price}</p>
           </div>
-          <button
-            className="flex items-center gap-3 w-full mt-5 py-3 rounded-full justify-center bg-[#dd5137]"
-            onClick={() => addToCart(product._id)}
-          >
-            <ShoppingCartOutlined className="text-white" />
-            <p className="text-white font-semibold text-sm">Add to cart</p>
-          </button>
+          <div className="flex items-center justify-between">
+            <button
+              className="flex items-center gap-3 w-full rounded-full"
+              onClick={() => addToCart(product._id)}
+            >
+              <ShoppingCartOutlined className="text-[#dd5137] text-lg" />
+              <p className=" font-semibold text-[16px] text-[#dd5137]">
+                Add to cart
+              </p>
+            </button>
+            <button
+              className="flex items-center gap-3 bg-[#dd5137] p-2 px-3 rounded-full py-2 w-[150px]"
+              onClick={() => handleBuy(product._id)}
+            >
+              <TagOutlined className="text-white" />
+              <p className="text-white text-sm text-center">Buy Now</p>
+            </button>
+          </div>
         </div>
         <Toaster />
       </div>

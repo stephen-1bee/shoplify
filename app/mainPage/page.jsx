@@ -33,6 +33,14 @@ const Page = () => {
     }
   }
 
+  // buy
+  const handleBuy = (event, productId) => {
+    event.stopPropagation()
+    setTimeout(() => {
+      toast.success("Buying...", productId)
+    }, 1000)
+  }
+
   // add to cart
   const addToCart = async (event, productId) => {
     event.stopPropagation()
@@ -120,7 +128,7 @@ const Page = () => {
             </h1>
             <br />
 
-            <h1 className="font-black text-2xl px-[2rem]">Men's Wear</h1>
+            <h1 className="font-black text-2xl px-[2rem]">Groceries</h1>
             <div>
               {loading ? (
                 <p className="px-[2rem]">loading...</p>
@@ -137,6 +145,7 @@ const Page = () => {
                         desc={product.desc}
                         price={product.price}
                         views={product.views ? product.views : "0"}
+                        buy={(event) => handleBuy(event, product._id)}
                         onAddToCart={(event) => addToCart(event, product._id)}
                       />
                     </div>
@@ -149,10 +158,11 @@ const Page = () => {
         </div>
 
         {/* recommended */}
-        <div>
-          <div className="flex flex-col w-[300px] mr-5 overflow-y-scroll p-5 shadow-lg h-[700px] ">
-            <h1 className="text-2xl font-bold mb-3">Recommended</h1>
-            {recommended?.length > 0 ? (
+        {recommended?.length > 0 && (
+          <div>
+            <div className="flex flex-col w-[300px] mr-5 overflow-y-scroll p-5 shadow-lg h-[700px] ">
+              <h1 className="text-2xl font-bold mb-3">Recommended</h1>
+
               <div>
                 {recommended.map((recommend) => (
                   <div>
@@ -165,14 +175,9 @@ const Page = () => {
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="mt-5 flex flex-col gap-1 items-center">
-                <FrownOutlined />
-                <p>no recommndations yet</p>
-              </div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <Footer />
       <Toaster />

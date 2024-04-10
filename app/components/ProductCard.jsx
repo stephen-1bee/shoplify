@@ -3,7 +3,7 @@ import { ShoppingCartOutlined, TagOutlined } from "@ant-design/icons"
 import Image from "next/image"
 import React from "react"
 
-const ProductCard = ({ image, title, desc, price, onAddToCart }) => {
+const ProductCard = ({ image, title, desc, price, onAddToCart, buy }) => {
   return (
     <div className="w-[350px] bg-white rounded-xl p-8 px-3">
       <div className="px-5">
@@ -20,7 +20,7 @@ const ProductCard = ({ image, title, desc, price, onAddToCart }) => {
         </div>
         <p className="text-[#818181] mb-3">{desc}</p>
       </div>
-      {/* <div className="flex items-center px-5">
+      <div className="flex items-center px-5">
         <button
           className="flex items-center gap-3 w-[200px]"
           onClick={onAddToCart}
@@ -30,12 +30,12 @@ const ProductCard = ({ image, title, desc, price, onAddToCart }) => {
         </button>
         <button
           className="flex items-center gap-3 bg-[#dd5137] p-1 px-3 rounded-full py-2 w-[150px]"
-          onClick={() => buyNow()}
+          onClick={buy}
         >
           <TagOutlined className="text-white" />
           <p className="text-white text-sm text-center">Buy Now</p>
         </button>
-      </div> */}
+      </div>
     </div>
   )
 }
