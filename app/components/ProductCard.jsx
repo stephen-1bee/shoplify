@@ -1,9 +1,21 @@
 "use client"
-import { ShoppingCartOutlined, TagOutlined } from "@ant-design/icons"
+import {
+  ShoppingCartOutlined,
+  TagOutlined,
+  EyeOutlined,
+} from "@ant-design/icons"
 import Image from "next/image"
 import React from "react"
 
-const ProductCard = ({ image, title, desc, price, onAddToCart, buy }) => {
+const ProductCard = ({
+  image,
+  title,
+  desc,
+  price,
+  onAddToCart,
+  buy,
+  views,
+}) => {
   return (
     <div className="w-[350px] bg-white rounded-xl p-8 px-3">
       <div className="px-5">
@@ -20,7 +32,11 @@ const ProductCard = ({ image, title, desc, price, onAddToCart, buy }) => {
         </div>
         <p className="text-[#818181] mb-3">{desc}</p>
       </div>
-      <div className="flex items-center px-5">
+      <div className="flex items-center justify-between p-1 px-4 rounded-full py-2 w-[70px] ml-auto">
+        <EyeOutlined />
+        <p className="text-sm text-center">{views}</p>
+      </div>
+      <div className="flex items-center justify-between mt-2">
         <button
           className="flex items-center gap-3 w-[200px]"
           onClick={onAddToCart}
@@ -29,7 +45,7 @@ const ProductCard = ({ image, title, desc, price, onAddToCart, buy }) => {
           <p className="text-[#dd5137] font-semibold text-sm">Add to cart</p>
         </button>
         <button
-          className="flex items-center gap-3 bg-[#dd5137] p-1 px-3 rounded-full py-2 w-[150px]"
+          className="flex items-center gap-3 bg-[#dd5137] p-1 px-3 rounded-full py-2"
           onClick={buy}
         >
           <TagOutlined className="text-white" />

@@ -30,7 +30,7 @@ const Card = ({ image, title, desc, price, onAddToCart, views, buy }) => {
         <p className="text-sm text-center">{views}</p>
       </div>
 
-      <div className="flex items-center mt-5 justify-between">
+      <div className="flex items-center mt-3 justify-between">
         <button
           className="flex items-center gap-3 w-[200px]"
           onClick={onAddToCart}

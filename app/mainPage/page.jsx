@@ -116,7 +116,7 @@ const Page = () => {
   }
 
   return (
-    <main className="min-h-screen ">
+    <main className="min-h-screen">
       <Nav />
       <br />
       <br />
@@ -160,7 +160,7 @@ const Page = () => {
         {/* recommended */}
         {recommended?.length > 0 && (
           <div>
-            <div className="flex flex-col w-[300px] mr-5 overflow-y-scroll p-5 shadow-lg h-[700px] ">
+            <div className="flex flex-col w-[400px] mr-5 overflow-y-scroll p-5 shadow-lg h-[700px] ">
               <h1 className="text-2xl font-bold mb-3">Recommended</h1>
 
               <div>
@@ -169,6 +169,7 @@ const Page = () => {
                     <ProductCard
                       image={recommend?.photo}
                       title={recommend?.name}
+                      views={recommend?.views}
                       desc={recommend?.desc}
                       price={recommend?.price}
                     />
