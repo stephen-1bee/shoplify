@@ -66,7 +66,7 @@ const Nav = () => {
           placeholder="search..."
           className="px-4 py-2 w-[200px] rounded-full ring-1 ring-[#ccc] "
         />
-        <Avatar size={40}>{conact(username)}</Avatar>
+        <Avatar size={40}>{username ? conact(username) : "No name"}</Avatar>
       </div>
     </div>
   )
