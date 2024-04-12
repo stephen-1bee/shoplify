@@ -5,13 +5,20 @@ import { EyeOutlined, TagOutlined } from "@ant-design/icons"
 import Footer from "../components/Footer"
 import { ShoppingCartOutlined } from "@ant-design/icons"
 import { ArrowLeftOutlined } from "@ant-design/icons"
-import { Avatar } from "antd"
+import { Avatar, Modal } from "antd"
 import { toast, Toaster } from "react-hot-toast"
 import conact from "@/utils/concat"
+import { LockOutlined } from "@mui/icons-material"
 
 const Page = () => {
   const [cartNo, setCartNo] = useState("")
   const [product, setproduct] = useState({})
+  const [productCount, setItemCount] = useState(1)
+  const [paymentModal, setpaymentModal] = useState(false)
+
+  const [visaCardNo, setVisaCardNo] = useState("")
+  const [cvc, setcvc] = useState("")
+  const [expire, setExpire] = useState("")
 
   let userId
   let username
@@ -108,15 +115,55 @@ const Page = () => {
     getProduct()
   }, [])
 
+  const handleItemCount = () => {
+    setItemCount((count) => count + 1)
+  }
+
+  // get subtotal
+  const subtotal = productCount * product.price
+
   const moveBack = () => {
     window.history.back()
   }
 
-  const handleBuy = (productId) => {
-    setTimeout(() => {
-      toast.success("Buying...")
-      toast.success(productId)
-    }, 1000)
+  const [amount, setamount] = useState(subtotal)
+
+  const handlePayment = async () => {
+    try {
+      const myHeaders = new Headers()
+      myHeaders.append("Content-Type", "application/json")
+
+      const raw = JSON.stringify({
+        card_no: visaCardNo,
+        expire: expire,
+        cvc: cvc,
+      })
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      }
+
+      await fetch(
+        "https://recommender-api-s335.onrender.com/api/v1/payments/create",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.msg === "Payment made successfully") {
+            toast.success(result.msg)
+            console.log(result)
+            setpaymentModal(false)
+          } else {
+            toast.error(result.msg)
+          }
+        })
+        .catch((error) => console.error(error))
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (
@@ -171,24 +218,87 @@ const Page = () => {
           <div className="flex items-center justify-between">
             <button
               className="flex items-center gap-3 w-full rounded-full"
-              onClick={() => addToCart(product._id)}
+              onClick={() => handleItemCount()}
             >
               <ShoppingCartOutlined className="text-[#dd5137] text-lg" />
               <p className=" font-semibold text-[16px] text-[#dd5137]">
-                Add to cart
+                Add Item
               </p>
             </button>
-            <button
-              className="flex items-center gap-3 bg-[#dd5137] p-2 px-3 rounded-full py-2 w-[150px]"
-              onClick={() => handleBuy(product._id)}
-            >
-              <TagOutlined className="text-white" />
-              <p className="text-white text-sm text-center">Buy Now</p>
-            </button>
           </div>
+          <div className="border-b border-gray-200 "></div>
+          <div className="flex items-center justify-between">
+            <h1>Items</h1>
+            <h1>{productCount}</h1>
+          </div>
+          <div className="flex items-center justify-between">
+            <h1>Subtotal</h1>
+            <h1>${subtotal}</h1>
+          </div>
+          <button
+            onClick={() => setpaymentModal(true)}
+            className="text-white py-3 rounded-full bg-[#dd5137]"
+          >
+            Checkout
+          </button>
         </div>
         <Toaster />
       </div>
+
+      <Modal
+        open={paymentModal}
+        onCancel={() => setpaymentModal(false)}
+        footer={false}
+        centered
+      >
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between mt-4">
+            <h1 className="text-lg font-semibold">Payment</h1>
+            <h1>Visa</h1>
+          </div>
+          <div className="border-b border-gray-200"></div>
+        </div>
+        <br />
+        <h1>Card Number</h1>
+        <input
+          onChange={(e) => setVisaCardNo(e.target.value)}
+          required
+          type="number"
+          className="px-3 py-3 rounded-lg border border-[#ccc] w-full"
+          maxLength="14"
+        />
+        <div className="flex items-center justify-between gap-5 py-3 ">
+          <div className="flex flex-col w-full">
+            <h1>Expiry</h1>
+            <input
+              onChange={(e) => setExpire(e.target.value)}
+              placeholder="MM/DD"
+              type="date"
+              className="px-3 py-3 rounded-lg border border-[#ccc] w-full"
+              onkeydown="return false"
+              onpaste="return false"
+              oninput="this.value = this.value.replace(/[^0-9\/]/g, '').slice(0, 5);"
+              max="9999-12-31"
+            />
+          </div>
+          <div className="flex flex-col w-full">
+            <h1>CVC</h1>
+            <input
+              onChange={(e) => setcvc(e.target.value)}
+              placeholder="874"
+              type="number"
+              className="px-3 py-3 rounded-lg border border-[#ccc] w-full"
+            />
+          </div>
+        </div>
+        <button
+          onClick={() => handlePayment()}
+          className="bg-blue-500 px-3 py-3 text-white w-full rounded-lg "
+        >
+          <LockOutlined />
+          Pay Now ${subtotal}
+        </button>
+      </Modal>
       <Footer />
     </div>
   )

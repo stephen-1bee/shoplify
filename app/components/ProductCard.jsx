@@ -17,7 +17,7 @@ const ProductCard = ({
   views,
 }) => {
   return (
-    <div className="w-[350px] bg-white rounded-xl p-8 px-3">
+    <div className="w-[350px] bg-white rounded-xl shadow  p-8 px-3">
       <div className="px-5">
         <Image
           width={400}

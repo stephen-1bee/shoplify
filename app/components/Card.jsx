@@ -10,7 +10,7 @@ import toast from "react-hot-toast"
 
 const Card = ({ image, title, desc, price, onAddToCart, views, buy }) => {
   return (
-    <div className="w-[350px] bg-white rounded-xl p-8 px-3">
+    <div className="w-[350px] bg-white shadow h-[450px] rounded-xl p-8 px-3">
       <div className="px-5">
         <Image
           width={100}

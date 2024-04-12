@@ -88,7 +88,7 @@ const page = () => {
           className="flex flex-col items-center justify-center w-[300px] gap-5"
         >
           <div className="w-full">
-            <h1>Email</h1>
+            <h1 className="px-2 py-1">Email</h1>
             <input
               type="text"
               onChange={(e) => setEmail(e.target.value)}
@@ -97,7 +97,7 @@ const page = () => {
             />
           </div>
           <div className="w-full">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between px-2 py-1">
               <h1>Passowrd</h1>
               {showPassword ? (
                 <EyeOutlined onClick={() => setshowPassword(!showPassword)} />

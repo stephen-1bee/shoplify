@@ -133,7 +133,7 @@ const Page = () => {
               {loading ? (
                 <p className="px-[2rem]">loading...</p>
               ) : (
-                <div className="flex flex-row mt-4 gap-2 w-full flex-wrap overflow-hidden ">
+                <div className="flex flex-row mt-4 gap-2 w-full flex-wrap overflow-hidden">
                   {products.map((product) => (
                     <div
                       className="cursor-pointer"
