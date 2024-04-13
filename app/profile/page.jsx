@@ -3,7 +3,7 @@ import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons"
 import conact from "@/utils/concat"
 import { Popconfirm, Avatar, Modal } from "antd"
 import React, { useEffect, useState } from "react"
-import { Button, Dropdown, Space } from "antd"
+import { Dropdown } from "antd"
 import MenuItem from "antd/es/menu/MenuItem"
 import Footer from "../components/Footer"
 import {
@@ -27,19 +27,12 @@ const page = () => {
 
   let userId
   let username
-  let user_card_no
-  let user_card_expire
-  let user_card_cvc
-  let user_card_amount
   let user_card_id
   if (typeof sessionStorage !== "undefined") {
     username = sessionStorage.getItem("username")
     userId = sessionStorage.getItem("userId")
     // hasCard = sessionStorage.getItem("hasCard")
-    user_card_no = sessionStorage.getItem("userCardNo")
-    user_card_expire = sessionStorage.getItem("userExpireNo")
-    user_card_cvc = sessionStorage.getItem("userCvcNo")
-    user_card_amount = sessionStorage.getItem("userCardAmount")
+    // user_card_amount = sessionStorage.getItem("userCardAmount")
     user_card_id = sessionStorage.getItem("userCardId")
   }
 
@@ -86,6 +79,7 @@ const page = () => {
     location.href = "/"
   }
 
+  // gey current user
   const getUser = async () => {
     try {
       const requestOptions = {
@@ -113,10 +107,9 @@ const page = () => {
     try {
       const myHeaders = new Headers()
       myHeaders.append("Content-Type", "application/json")
-
       const raw = JSON.stringify({
-        username: sUsername,
-        email: sEmail,
+        username: sUsername ? sUsername : user.username,
+        email: sEmail ? sEmail : user.email,
       })
 
       const requestOptions = {
@@ -280,7 +273,15 @@ const page = () => {
             placeholder="search..."
             className="px-4 py-2 w-[200px] rounded-full outline-black ring-1 ring-[#ccc]"
           />
-          <Avatar size={40}>{conact(username ? username : "No")}</Avatar>
+          <Dropdown
+            className="cursor-pointer"
+            menu={{
+              items,
+            }}
+            placement="bottomLeft"
+          >
+            <Avatar size={40}>{username ? conact(username) : "No name"}</Avatar>
+          </Dropdown>
         </div>
       </div>
 

@@ -1,12 +1,9 @@
 import conact from "@/utils/concat"
 import { Popconfirm, Avatar } from "antd"
 import React, { useEffect, useState } from "react"
-import { Button, Dropdown, Space } from "antd"
+import { Dropdown } from "antd"
 import MenuItem from "antd/es/menu/MenuItem"
-import Footer from "../components/Footer"
 import {
-  ArrowLeftOutlined,
-  DeleteOutlined,
   UserOutlined,
   QuestionCircleFilled,
   ShoppingCartOutlined,

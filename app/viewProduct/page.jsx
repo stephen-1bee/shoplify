@@ -1,11 +1,16 @@
 "use client"
-import React, { useState, useEffect, useActionState } from "react"
+import React, { useState, useEffect } from "react"
 import Image from "next/image"
-import { EyeOutlined, TagOutlined } from "@ant-design/icons"
+import { EyeOutlined } from "@ant-design/icons"
+import MenuItem from "antd/es/menu/MenuItem"
 import Footer from "../components/Footer"
-import { ShoppingCartOutlined } from "@ant-design/icons"
-import { ArrowLeftOutlined } from "@ant-design/icons"
-import { Avatar, Modal } from "antd"
+import {
+  ArrowLeftOutlined,
+  UserOutlined,
+  QuestionCircleFilled,
+  ShoppingCartOutlined,
+} from "@ant-design/icons"
+import { Avatar, Modal, Dropdown, Popconfirm } from "antd"
 import { toast, Toaster } from "react-hot-toast"
 import conact from "@/utils/concat"
 import { LockOutlined } from "@mui/icons-material"
@@ -189,6 +194,12 @@ const Page = () => {
     setItemCount((count) => count + 1)
   }
 
+  const handleDecreaseItemCount = () => {
+    if (productCount > 1) {
+      setItemCount((count) => count - 1)
+    }
+  }
+
   // get subtotal
   const subtotal = productCount * product.price
 
@@ -280,6 +291,47 @@ const Page = () => {
     }
   }
 
+  const moveToProfile = () => {
+    location.href = "/profile"
+  }
+  const logout = () => {
+    location.href = "/"
+  }
+
+  const items = [
+    {
+      label: (
+        <div className="flex items-center flex-col w-[200px] gap-4 py-5 ">
+          <MenuItem
+            className="flex gap-2 items-center"
+            onClick={() => moveToProfile()}
+          >
+            <UserOutlined />
+            {username}
+          </MenuItem>
+          <MenuItem>
+            <Popconfirm
+              title="Do you want to logout?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ style: { backgroundColor: "red" } }}
+              onConfirm={() => logout()}
+              icon={
+                <QuestionCircleFilled
+                  style={{
+                    color: "red",
+                  }}
+                />
+              }
+            >
+              Logout
+            </Popconfirm>
+          </MenuItem>
+        </div>
+      ),
+    },
+  ]
+
   return (
     <div>
       {/* nav */}
@@ -305,7 +357,15 @@ const Page = () => {
             placeholder="search..."
             className="px-4 py-2 w-[200px] rounded-full outline-black ring-1 ring-[#ccc]"
           />
-          <Avatar size={40}>{conact(username ? username : "No")}</Avatar>
+          <Dropdown
+            className="cursor-pointer"
+            menu={{
+              items,
+            }}
+            placement="bottomLeft"
+          >
+            <Avatar size={40}>{username ? conact(username) : "No name"}</Avatar>
+          </Dropdown>
         </div>
       </div>
 
@@ -329,17 +389,36 @@ const Page = () => {
             </p>
             <p className="text-lg font-semibold">$ {product.price}</p>
           </div>
+
           <div className="flex items-center justify-between">
-            <button
-              className="flex items-center gap-3 w-full rounded-full"
-              onClick={() => handleItemCount()}
-            >
-              <ShoppingCartOutlined className="text-[#dd5137] text-lg" />
-              <p className=" font-semibold text-[16px] text-[#dd5137]">
-                Add Item
-              </p>
-            </button>
+            <div>
+              {" "}
+              <button
+                onClick={() => addToCart(product._id)}
+                className="flex items-center gap-3 w-full rounded-full"
+              >
+                <ShoppingCartOutlined className="text-[#dd5137] text-lg" />
+                <p className=" font-semibold text-[16px] text-[#dd5137]">
+                  Add Cart
+                </p>
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleItemCount()}
+                className="bg-gray-100 px-3 py-1 rounded-lg"
+              >
+                +
+              </button>
+              <button
+                onClick={() => handleDecreaseItemCount()}
+                className="bg-gray-100 px-3 py-1 rounded-lg"
+              >
+                -
+              </button>
+            </div>
           </div>
+
           <div className="border-b border-gray-200 "></div>
           <div className="flex items-center justify-between">
             <h1>Items</h1>
