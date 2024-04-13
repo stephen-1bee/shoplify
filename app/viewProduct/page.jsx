@@ -32,6 +32,7 @@ const Page = () => {
   let user_card_expire
   let user_card_cvc
   let user_card_amount
+  let user_card_id
   if (typeof sessionStorage !== "undefined") {
     username = sessionStorage.getItem("username")
     userId = sessionStorage.getItem("userId")
@@ -41,6 +42,7 @@ const Page = () => {
     user_card_expire = sessionStorage.getItem("userExpireNo")
     user_card_cvc = sessionStorage.getItem("userCvcNo")
     user_card_amount = sessionStorage.getItem("userCardAmount")
+    user_card_id = sessionStorage.getItem("userCardId")
   }
 
   // add to cart
@@ -167,6 +169,7 @@ const Page = () => {
           sessionStorage.setItem("userExpireNo", result.user_card.expire)
           sessionStorage.setItem("userCvcNo", result.user_card.cvc)
           sessionStorage.setItem("userCardAmount", result.user_card.amount)
+          sessionStorage.setItem("userCardId", result.user_card._id)
           console.log(result.user_card)
         })
         .catch((error) => console.error(error))
@@ -247,6 +250,7 @@ const Page = () => {
 
       const raw = JSON.stringify({
         user_id: userId,
+        product_price: subtotal,
       })
 
       const requestOptions = {
@@ -262,7 +266,7 @@ const Page = () => {
       )
         .then((response) => response.json())
         .then((result) => {
-          if (result.msg === `Payment made successfully`) {
+          if (result.msg === "Payment made successfully") {
             toast.success(result.msg)
             console.log(result)
             setpaymentModal(false)
@@ -465,7 +469,6 @@ const Page = () => {
           Pay Now ${subtotal}
         </button>
       </Modal>
-
       <Footer />
     </div>
   )

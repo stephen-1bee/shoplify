@@ -1,11 +1,11 @@
 "use client"
 import React, { useState, useEffect } from "react"
 import Footer from "../components/Footer"
-import { ShoppingCartOutlined } from "@ant-design/icons"
 import {
   ArrowLeftOutlined,
   DeleteOutlined,
   QuestionCircleFilled,
+  ShoppingCartOutlined,
 } from "@ant-design/icons"
 import { Popconfirm, Avatar } from "antd"
 import Image from "next/image"

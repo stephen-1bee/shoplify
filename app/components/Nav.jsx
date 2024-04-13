@@ -1,7 +1,16 @@
 import conact from "@/utils/concat"
-import { ShoppingCartOutlined } from "@ant-design/icons"
-import { Avatar } from "antd"
+import { Popconfirm, Avatar } from "antd"
 import React, { useEffect, useState } from "react"
+import { Button, Dropdown, Space } from "antd"
+import MenuItem from "antd/es/menu/MenuItem"
+import Footer from "../components/Footer"
+import {
+  ArrowLeftOutlined,
+  DeleteOutlined,
+  UserOutlined,
+  QuestionCircleFilled,
+  ShoppingCartOutlined,
+} from "@ant-design/icons"
 
 const Nav = () => {
   const [cart, setCart] = useState([])
@@ -44,6 +53,47 @@ const Nav = () => {
     getCart()
   }, [])
 
+  const moveToProfile = () => {
+    location.href = "/profile"
+  }
+  const logout = () => {
+    location.href = "/"
+  }
+
+  const items = [
+    {
+      label: (
+        <div className="flex items-center flex-col w-[200px] gap-4 py-5 ">
+          <MenuItem
+            className="flex gap-2 items-center"
+            onClick={() => moveToProfile()}
+          >
+            <UserOutlined />
+            {username}
+          </MenuItem>
+          <MenuItem>
+            <Popconfirm
+              title="Do you want to logout?"
+              okText="Yes"
+              cancelText="No"
+              okButtonProps={{ style: { backgroundColor: "red" } }}
+              onConfirm={() => logout()}
+              icon={
+                <QuestionCircleFilled
+                  style={{
+                    color: "red",
+                  }}
+                />
+              }
+            >
+              Logout
+            </Popconfirm>
+          </MenuItem>
+        </div>
+      ),
+    },
+  ]
+
   return (
     <div class="flex w-full items-center justify-between px-8 shadow h-[10vh] fixed z-[999] bg-white">
       <div>
@@ -66,7 +116,15 @@ const Nav = () => {
           placeholder="search..."
           className="px-4 py-2 w-[200px] rounded-full ring-1 ring-[#ccc] "
         />
-        <Avatar size={40}>{username ? conact(username) : "No name"}</Avatar>
+        <Dropdown
+          className="cursor-pointer"
+          menu={{
+            items,
+          }}
+          placement="bottomLeft"
+        >
+          <Avatar size={40}>{username ? conact(username) : "No name"}</Avatar>
+        </Dropdown>
       </div>
     </div>
   )

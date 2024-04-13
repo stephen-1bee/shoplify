@@ -13,7 +13,7 @@ const Page = () => {
   const [recommended, setrecommended] = useState(null)
 
   // Retrieve user id
-  let userId = null
+  let userId
   if (typeof sessionStorage !== "undefined") {
     userId = sessionStorage.getItem("userId")
   }
