@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useActionState } from "react"
 import Image from "next/image"
 import { EyeOutlined, TagOutlined } from "@ant-design/icons"
 import Footer from "../components/Footer"
@@ -15,18 +15,32 @@ const Page = () => {
   const [product, setproduct] = useState({})
   const [productCount, setItemCount] = useState(1)
   const [paymentModal, setpaymentModal] = useState(false)
+  const [AddCardModal, setAddCardModal] = useState(false)
+  const [user, setuser] = useState({})
 
+  // state to add card fields
   const [visaCardNo, setVisaCardNo] = useState("")
   const [cvc, setcvc] = useState("")
   const [expire, setExpire] = useState("")
+  const [balance, setbalance] = useState("")
 
   let userId
   let username
   let productId
+  let hasCard
+  let user_card_no
+  let user_card_expire
+  let user_card_cvc
+  let user_card_amount
   if (typeof sessionStorage !== "undefined") {
     username = sessionStorage.getItem("username")
     userId = sessionStorage.getItem("userId")
     productId = sessionStorage.getItem("productId")
+    hasCard = sessionStorage.getItem("hasCard")
+    user_card_no = sessionStorage.getItem("userCardNo")
+    user_card_expire = sessionStorage.getItem("userExpireNo")
+    user_card_cvc = sessionStorage.getItem("userCvcNo")
+    user_card_amount = sessionStorage.getItem("userCardAmount")
   }
 
   // add to cart
@@ -110,7 +124,60 @@ const Page = () => {
     }
   }
 
+  // get single user
+  const getUser = async () => {
+    try {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      }
+
+      await fetch(
+        `https://recommender-api-s335.onrender.com/api/v1/users/one/${userId}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          setuser(result.user)
+          console.log(result.user)
+          sessionStorage.setItem("hasCard", result.user.hasCard)
+
+          setAddCardModal(false)
+        })
+        .catch((error) => console.error(error))
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const getUserCard = async () => {
+    try {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      }
+
+      await fetch(
+        `https://recommender-api-s335.onrender.com/api/v1/checkouts/user/${userId}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          sessionStorage.setItem("userCardNo", result.user_card.card_no)
+          sessionStorage.setItem("userExpireNo", result.user_card.expire)
+          sessionStorage.setItem("userCvcNo", result.user_card.cvc)
+          sessionStorage.setItem("userCardAmount", result.user_card.amount)
+          console.log(result.user_card)
+        })
+        .catch((error) => console.error(error))
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   useEffect(() => {
+    getUserCard()
+    getUser()
     getCart()
     getProduct()
   }, [])
@@ -128,15 +195,17 @@ const Page = () => {
 
   const [amount, setamount] = useState(subtotal)
 
-  const handlePayment = async () => {
+  const handleAddCard = async () => {
     try {
       const myHeaders = new Headers()
       myHeaders.append("Content-Type", "application/json")
 
       const raw = JSON.stringify({
+        user_id: userId,
         card_no: visaCardNo,
         expire: expire,
         cvc: cvc,
+        amount: balance,
       })
 
       const requestOptions = {
@@ -147,12 +216,53 @@ const Page = () => {
       }
 
       await fetch(
-        "https://recommender-api-s335.onrender.com/api/v1/payments/create",
+        "https://recommender-api-s335.onrender.com/api/v1/checkouts/add-card",
         requestOptions
       )
         .then((response) => response.json())
         .then((result) => {
-          if (result.msg === "Payment made successfully") {
+          if (result.msg === "Card saved successfully") {
+            toast.success(result.msg)
+            console.log(result)
+            setAddCardModal(false)
+          } else {
+            toast.error(result.msg)
+          }
+        })
+        .catch((error) => console.error(error))
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  // open modal logic
+  const openModals = () => {
+    hasCard === "true" ? setpaymentModal(true) : setAddCardModal(true)
+  }
+
+  const handlePayment = async () => {
+    try {
+      const myHeaders = new Headers()
+      myHeaders.append("Content-Type", "application/json")
+
+      const raw = JSON.stringify({
+        user_id: userId,
+      })
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      }
+
+      await fetch(
+        `https://recommender-api-s335.onrender.com/api/v1/checkouts/payment/${productId}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.msg === `Payment made successfully`) {
             toast.success(result.msg)
             console.log(result)
             setpaymentModal(false)
@@ -236,7 +346,7 @@ const Page = () => {
             <h1>${subtotal}</h1>
           </div>
           <button
-            onClick={() => setpaymentModal(true)}
+            onClick={() => openModals()}
             className="text-white py-3 rounded-full bg-[#dd5137]"
           >
             Checkout
@@ -245,6 +355,67 @@ const Page = () => {
         <Toaster />
       </div>
 
+      {/* Add card modal */}
+      <Modal
+        open={AddCardModal}
+        onCancel={() => setAddCardModal(false)}
+        footer={false}
+        centered
+      >
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between mt-4">
+            <h1 className="text-lg font-semibold">Add Card</h1>
+            <h1>Visa</h1>
+          </div>
+          <div className="border-b border-gray-200"></div>
+        </div>
+        <br />
+
+        <h1>Card Number</h1>
+        <input
+          onChange={(e) => setVisaCardNo(e.target.value)}
+          required
+          type="numeric"
+          className="px-3 py-3 rounded-lg border border-[#ccc] w-full"
+        />
+
+        <div className="flex items-center justify-between gap-5 py-3 ">
+          <div className="flex flex-col w-full">
+            <h1>Expiry</h1>
+            <input
+              className="px-3 py-3 rounded-lg border border-[#ccc] w-full"
+              onChange={(e) => setExpire(e.target.value)}
+              placeholder="MM/YY"
+            />
+          </div>
+
+          <div className="flex flex-col w-full">
+            <h1>CVC</h1>
+            <input
+              onChange={(e) => setcvc(e.target.value)}
+              placeholder="874"
+              type="number"
+              className="px-3 py-3 rounded-lg border border-[#ccc] w-full"
+            />
+          </div>
+        </div>
+        <h1>Amount</h1>
+        <input
+          onChange={(e) => setbalance(e.target.value)}
+          placeholder="0.00"
+          type="number"
+          className="px-3 py-3 rounded-lg border border-[#ccc] w-full my-2"
+        />
+        <button
+          onClick={() => handleAddCard()}
+          className="bg-blue-500 px-3 py-3 items-center flex gap-1 justify-center text-white w-full rounded-lg "
+        >
+          <LockOutlined />
+          Add Card
+        </button>
+      </Modal>
+
+      {/* Payment modal */}
       <Modal
         open={paymentModal}
         onCancel={() => setpaymentModal(false)}
@@ -261,8 +432,8 @@ const Page = () => {
         <br />
         <h1>Card Number</h1>
         <input
-          onChange={(e) => setVisaCardNo(e.target.value)}
           required
+          defaultValue={user_card_no}
           type="number"
           className="px-3 py-3 rounded-lg border border-[#ccc] w-full"
           maxLength="14"
@@ -271,21 +442,16 @@ const Page = () => {
           <div className="flex flex-col w-full">
             <h1>Expiry</h1>
             <input
-              onChange={(e) => setExpire(e.target.value)}
-              placeholder="MM/DD"
-              type="date"
+              defaultValue={user_card_expire}
+              placeholder={user_card_expire}
+              type="text"
               className="px-3 py-3 rounded-lg border border-[#ccc] w-full"
-              onkeydown="return false"
-              onpaste="return false"
-              oninput="this.value = this.value.replace(/[^0-9\/]/g, '').slice(0, 5);"
-              max="9999-12-31"
             />
           </div>
           <div className="flex flex-col w-full">
             <h1>CVC</h1>
             <input
-              onChange={(e) => setcvc(e.target.value)}
-              placeholder="874"
+              defaultValue={user_card_cvc}
               type="number"
               className="px-3 py-3 rounded-lg border border-[#ccc] w-full"
             />
@@ -299,6 +465,7 @@ const Page = () => {
           Pay Now ${subtotal}
         </button>
       </Modal>
+
       <Footer />
     </div>
   )

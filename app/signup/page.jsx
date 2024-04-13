@@ -45,13 +45,15 @@ const page = () => {
             toast.success("Signup successful")
             console.log(result)
             setsLoading(false)
-            location.href = "/login"
+            location.href = "/"
           } else {
             toast.error(result.msg)
+            setsLoading(false)
           }
         })
         .catch((error) => console.error(error))
     } catch (err) {
+      setsLoading(false)
       console.log(err)
     }
   }
